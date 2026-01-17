@@ -39,6 +39,17 @@ export default function Home() {
     }
   }, [tracks]);
 
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      tracks.forEach((track) => {
+        if (track.url.startsWith("blob:")) {
+          URL.revokeObjectURL(track.url);
+        }
+      });
+    };
+  }, []);
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
@@ -88,6 +99,12 @@ export default function Home() {
 
   const handleTrackRemove = (index: number) => {
     setTracks((prev) => {
+      // Revoke object URL to prevent memory leak
+      const trackToRemove = prev[index];
+      if (trackToRemove && trackToRemove.url.startsWith("blob:")) {
+        URL.revokeObjectURL(trackToRemove.url);
+      }
+      
       const newTracks = prev.filter((_, i) => i !== index);
       
       // Adjust current track index if needed

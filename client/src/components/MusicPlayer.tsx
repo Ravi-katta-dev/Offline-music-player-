@@ -40,6 +40,9 @@ export function MusicPlayer({
 
   const currentTrack = tracks[currentTrackIndex];
 
+  // Constants
+  const RESTART_THRESHOLD_SECONDS = 3;
+
   // Load and play new track
   useEffect(() => {
     if (audioRef.current && currentTrack) {
@@ -52,7 +55,7 @@ export function MusicPlayer({
         });
       }
     }
-  }, [currentTrack]);
+  }, [currentTrack, isPlaying]);
 
   // Update current time
   useEffect(() => {
@@ -152,7 +155,7 @@ export function MusicPlayer({
 
   // Previous track
   const handlePrevious = () => {
-    if (currentTime > 3) {
+    if (currentTime > RESTART_THRESHOLD_SECONDS) {
       // If more than 3 seconds into the track, restart it
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
@@ -214,7 +217,7 @@ export function MusicPlayer({
           variant="outline"
           size="icon"
           onClick={handlePrevious}
-          disabled={currentTrackIndex === 0 && currentTime <= 3}
+          disabled={currentTrackIndex === 0 && currentTime <= RESTART_THRESHOLD_SECONDS}
         >
           <SkipBack className="h-5 w-5" />
         </Button>
