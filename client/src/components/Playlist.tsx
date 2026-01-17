@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Music, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 
 interface Track {
   id: string;
@@ -24,13 +24,6 @@ export function Playlist({
   onTrackSelect,
   onTrackRemove,
 }: PlaylistProps) {
-  const formatDuration = (duration: number): string => {
-    if (isNaN(duration) || !isFinite(duration)) return "0:00";
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  };
-
   if (tracks.length === 0) {
     return (
       <Card className="w-full max-w-2xl mx-auto p-8">
@@ -63,7 +56,7 @@ export function Playlist({
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{track.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {formatDuration(track.duration)}
+                  {formatTime(track.duration)}
                 </p>
               </div>
               <Button
